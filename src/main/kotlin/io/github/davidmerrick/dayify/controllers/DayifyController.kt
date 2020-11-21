@@ -12,8 +12,8 @@ private val log = KotlinLogging.logger {}
 class DayifyController {
 
     @Get("/", produces = [MediaType.TEXT_PLAIN])
-    fun dayify(@QueryValue calendar: String): String? {
-        log.info("Fetching calendar: $calendar")
+    fun dayify(@QueryValue url: String): String? {
+        log.info("Fetching calendar: $url")
         return "Success"
     }
 }
