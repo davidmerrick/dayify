@@ -1,0 +1,9 @@
+micronaut:
+  application:
+    name: dayify
+
+endpoints:
+  all:
+    enabled: false
+  health:
+    enabled: true
