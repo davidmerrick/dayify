@@ -84,4 +84,10 @@ tasks {
     test {
         useJUnitPlatform()
     }
+
+    shadowJar {
+        archiveBaseName.set("application")
+        archiveClassifier.set("")
+        archiveVersion.set("")
+    }
 }
