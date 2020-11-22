@@ -15,3 +15,5 @@ Ah, that's better. You can even subscribe to the calendar URL in Dayify.
 
 Better living, with Dayify™.
 
+Try it out: 
+https://dayify-gy2rtbjq4q-uw.a.run.app/dayify?url=yourCalendarUrl
