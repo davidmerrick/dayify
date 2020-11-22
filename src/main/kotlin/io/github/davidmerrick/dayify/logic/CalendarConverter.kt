@@ -1,0 +1,40 @@
+package io.github.davidmerrick.dayify.logic
+
+import biweekly.ICalendar
+import biweekly.component.VEvent
+import biweekly.property.DateEnd
+import biweekly.property.DateStart
+
+object CalendarConverter {
+
+    /**
+     * Converts events to all-day events.
+     * Returns a copy of the input calendar
+     * containing the converted events.
+     */
+    fun convert(inCalendar: ICalendar): ICalendar {
+        val convertedEvents = inCalendar.events.map {
+            val newEvent = VEvent(it)
+
+            // Strip out time components
+            newEvent.dateStart = DateStart(
+                it.dateStart.value.rawComponents.toDate(),
+                false
+            )
+            newEvent.dateEnd = DateEnd(
+                it.dateEnd.value.rawComponents.toDate(),
+                false
+            )
+            newEvent
+        }.toList()
+
+        return inCalendar.copyWithEvents(convertedEvents)
+    }
+}
+
+fun ICalendar.copyWithEvents(events: List<VEvent>): ICalendar {
+    val newCalendar = ICalendar(this)
+    newCalendar.setComponent(VEvent::class.java, null)
+    events.forEach { newCalendar.addEvent(it) }
+    return newCalendar
+}

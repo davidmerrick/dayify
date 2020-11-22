@@ -43,7 +43,6 @@ val kotlinVersion = project.properties["kotlinVersion"]
 val micronautVersion = project.properties["micronautVersion"]
 
 dependencies {
-    implementation(platform("io.micronaut:micronaut-bom:$micronautVersion"))
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-inject")
     implementation("io.micronaut:micronaut-validation")
@@ -53,6 +52,7 @@ dependencies {
     implementation("io.micronaut:micronaut-http-client")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("net.sf.biweekly:biweekly:0.6.5")
 
     runtimeOnly("ch.qos.logback:logback-classic")
 
