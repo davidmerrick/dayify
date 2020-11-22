@@ -11,9 +11,11 @@ converted to all-day events.
 
 ![](/docs/img/screenshot-after.png)
 
-Ah, that's better. You can even subscribe to the calendar URL in Dayify.
+Ah, that's better. 
 
 Better living, with Dayify™.
 
 Try it out: 
 https://dayify-gy2rtbjq4q-uw.a.run.app/dayify?url=yourCalendarUrl
+
+Pro tip: Pass Dayify a calendar you want to subscribe to, have Dayify proxy it, and subscribe to the Dayify URL to give all future events that all-day treatment.
