@@ -4,6 +4,8 @@ import biweekly.ICalendar
 import biweekly.component.VEvent
 import biweekly.property.DateEnd
 import biweekly.property.DateStart
+import java.time.temporal.ChronoUnit
+import java.util.Date
 
 object CalendarConverter {
 
@@ -21,14 +23,27 @@ object CalendarConverter {
                 it.dateStart.value.rawComponents.toDate(),
                 false
             )
+
             newEvent.dateEnd = DateEnd(
-                it.dateEnd.value.rawComponents.toDate(),
+                convertDateEnd(it.dateEnd),
                 false
             )
             newEvent
         }.toList()
 
         return inCalendar.copyWithEvents(convertedEvents)
+    }
+
+    /**
+     * Returns a Date that's 1 day after DateEnd.
+     * This is a workaround for end dates being exclusive as per RFC 2445
+     */
+    private fun convertDateEnd(dateEnd: DateEnd): Date {
+        val dateInstant = dateEnd.value.rawComponents
+            .toDate()
+            .toInstant()
+            .plus(1L, ChronoUnit.DAYS)
+        return Date.from(dateInstant)
     }
 }
 
