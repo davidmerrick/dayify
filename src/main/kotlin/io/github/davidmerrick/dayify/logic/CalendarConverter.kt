@@ -7,6 +7,10 @@ import biweekly.property.DateStart
 import java.time.temporal.ChronoUnit
 import java.util.Date
 
+/**
+ * Note: By default, biweekly writes all date/time values in UTC time,
+ * so no need to worry about conversions.
+ */
 object CalendarConverter {
 
     /**
@@ -16,7 +20,6 @@ object CalendarConverter {
      */
     fun convert(inCalendar: ICalendar): ICalendar {
 
-        // Todo: Normalize everything to UTC
         val convertedEvents = inCalendar.events.map {
             val newEvent = VEvent(it)
 
