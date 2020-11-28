@@ -15,6 +15,8 @@ object CalendarConverter {
      * containing the converted events.
      */
     fun convert(inCalendar: ICalendar): ICalendar {
+
+        // Todo: Normalize everything to UTC
         val convertedEvents = inCalendar.events.map {
             val newEvent = VEvent(it)
 
