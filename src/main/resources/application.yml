@@ -1,6 +1,10 @@
 micronaut:
   application:
     name: dayify
+  http:
+    client:
+      read-timeout: 30s
+      read-idle-timeout: 30s
 
 endpoints:
   all:

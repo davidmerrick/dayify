@@ -15,7 +15,9 @@ private val log = KotlinLogging.logger {}
 private const val CAL_MEDIA_TYPE = "text/calendar"
 
 @Controller("/dayify")
-class DayifyController(@Client private val client: HttpClient) {
+class DayifyController(
+    @field:Client private val client: HttpClient
+) {
 
     @Get("/", produces = [CAL_MEDIA_TYPE])
     fun dayify(@QueryValue url: String): HttpResponse<String> {
