@@ -19,22 +19,9 @@ object CalendarConverter {
      * containing the converted events.
      */
     fun convert(inCalendar: ICalendar): ICalendar {
-
-        val convertedEvents = inCalendar.events.map {
-            val newEvent = VEvent(it)
-
-            // Strip out time components
-            newEvent.dateStart = DateStart(
-                it.dateStart.value.rawComponents.toDate(),
-                false
-            )
-
-            newEvent.dateEnd = DateEnd(
-                convertDateEnd(it.dateEnd),
-                false
-            )
-            newEvent
-        }.toList()
+        val convertedEvents = inCalendar.events
+            .map { it.stripTime() }
+            .toList()
 
         return inCalendar.copyWithEvents(convertedEvents)
     }
@@ -43,7 +30,7 @@ object CalendarConverter {
      * Returns a Date that's 1 day after DateEnd.
      * This is a workaround for end dates being exclusive as per RFC 2445
      */
-    private fun convertDateEnd(dateEnd: DateEnd): Date {
+    fun convertDateEnd(dateEnd: DateEnd): Date {
         val dateInstant = dateEnd.value.rawComponents
             .toDate()
             .toInstant()
@@ -57,4 +44,20 @@ fun ICalendar.copyWithEvents(events: List<VEvent>): ICalendar {
     newCalendar.setComponent(VEvent::class.java, null)
     events.forEach { newCalendar.addEvent(it) }
     return newCalendar
+}
+
+fun VEvent.stripTime(): VEvent {
+    val newEvent = VEvent(this)
+
+    // Strip out time components
+    newEvent.dateStart = DateStart(
+        this.dateStart.value.rawComponents.toDate(),
+        false
+    )
+
+    newEvent.dateEnd = DateEnd(
+        CalendarConverter.convertDateEnd(this.dateEnd),
+        false
+    )
+    return newEvent
 }
