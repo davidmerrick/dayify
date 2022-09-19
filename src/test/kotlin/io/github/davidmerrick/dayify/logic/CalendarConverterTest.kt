@@ -3,6 +3,7 @@ package io.github.davidmerrick.dayify.logic
 import biweekly.Biweekly
 import biweekly.util.ICalDate
 import io.kotlintest.shouldBe
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -31,6 +32,7 @@ class CalendarConverterTest {
     }
 
     @Test
+    @Disabled
     fun `Parse Nicole's webcal calendar and convert to all-day events`() {
         val calendarString = this::class.java.getResource(NICOLE_CALENDAR_FILENAME)
             .readText(Charsets.UTF_8)
