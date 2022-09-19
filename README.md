@@ -29,3 +29,7 @@ According to RFC 2445, the behavior around end dates is exclusive:
 Meaning if you had an event that ended on Monday the 21st at noon, but converted that to an all-day event,
 the behavior would be to show the event as going through Sunday. This is clearly undesired behavior,
 so Dayify rounds end dates to the next day.
+
+# Todo: 
+* Have the client send a user agent
+* Have the client follow 302 redirects
