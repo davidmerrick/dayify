@@ -47,12 +47,12 @@ dependencies {
     implementation("io.micronaut:micronaut-inject")
     implementation("io.micronaut:micronaut-validation")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("io.github.microutils:kotlin-logging:1.7.2")
+    implementation("io.github.microutils:kotlin-logging:2.1.23")
     implementation("io.micronaut:micronaut-management")
     implementation("io.micronaut:micronaut-http-client")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("net.sf.biweekly:biweekly:0.6.5")
+    implementation("net.sf.biweekly:biweekly:0.6.6")
 
     runtimeOnly("ch.qos.logback:logback-classic")
 

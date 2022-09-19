@@ -19,11 +19,18 @@ object CalendarConverter {
      * containing the converted events.
      */
     fun convert(inCalendar: ICalendar): ICalendar {
+        val conversionStrategy = resolveDateConversionStrategy(inCalendar)
         val convertedEvents = inCalendar.events
-            .map { it.stripTime() }
+            .map { it.stripTime(conversionStrategy) }
             .toList()
 
         return inCalendar.copyWithEvents(convertedEvents)
+    }
+
+    private fun resolveDateConversionStrategy(calendar: ICalendar): DateConversionStrategy {
+        return if (calendar.events.first().url?.toString()?.contains("pagerduty") == true) {
+            PagerDutyDateConversionStrategy
+        } else DefaultDateConversionStrategy
     }
 
     /**
@@ -46,18 +53,12 @@ fun ICalendar.copyWithEvents(events: List<VEvent>): ICalendar {
     return newCalendar
 }
 
-fun VEvent.stripTime(): VEvent {
+fun VEvent.stripTime(strategy: DateConversionStrategy): VEvent {
     val newEvent = VEvent(this)
 
     // Strip out time components
-    newEvent.dateStart = DateStart(
-        this.dateStart.value.rawComponents.toDate(),
-        false
-    )
+    newEvent.dateStart = strategy.convertStartDate(this.dateStart)
+    newEvent.dateEnd = strategy.convertEndDate(this.dateEnd)
 
-    newEvent.dateEnd = DateEnd(
-        CalendarConverter.convertDateEnd(this.dateEnd),
-        false
-    )
     return newEvent
 }
