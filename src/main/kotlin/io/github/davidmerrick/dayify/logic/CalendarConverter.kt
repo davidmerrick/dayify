@@ -10,6 +10,9 @@ import java.util.Date
 /**
  * Note: By default, biweekly writes all date/time values in UTC time,
  * so no need to worry about conversions.
+ *
+ * Todo: ConversionStrategy is a quick hack. Really what we should do is compute
+ * which day the end time lands on. Then add a day, since end dates are exclusive.
  */
 object CalendarConverter {
 
@@ -31,18 +34,6 @@ object CalendarConverter {
         return if (calendar.events.first().url?.toString()?.contains("pagerduty") == true) {
             PagerDutyDateConversionStrategy
         } else DefaultDateConversionStrategy
-    }
-
-    /**
-     * Returns a Date that's 1 day after DateEnd.
-     * This is a workaround for end dates being exclusive as per RFC 2445
-     */
-    fun convertDateEnd(dateEnd: DateEnd): Date {
-        val dateInstant = dateEnd.value.rawComponents
-            .toDate()
-            .toInstant()
-            .plus(1L, ChronoUnit.DAYS)
-        return Date.from(dateInstant)
     }
 }
 
