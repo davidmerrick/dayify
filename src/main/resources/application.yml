@@ -1,10 +1,17 @@
 micronaut:
   application:
     name: dayify
+  netty:
+    event-loops:
+      default:
+        num-threads: 3
+      httpclient:
+        num-threads: 20
   http:
     client:
       read-timeout: 30s
       read-idle-timeout: 30s
+      event-loop-group: httpclient
 
 endpoints:
   all:
