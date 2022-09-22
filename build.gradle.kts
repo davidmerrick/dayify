@@ -54,20 +54,21 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
     implementation("net.sf.biweekly:biweekly:0.6.6")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.6.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
 
     runtimeOnly("ch.qos.logback:logback-classic")
 
     // Test
 
-    testImplementation("org.spekframework.spek2:spek-runner-junit5:2.0.8")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.6.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.6.2")
-    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.2")
+    testImplementation("org.spekframework.spek2:spek-runner-junit5:2.0.18")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
+    testImplementation("io.kotlintest:kotlintest-runner-junit5:3.4.2")
     testImplementation("io.micronaut.test:micronaut-test-spock")
     testImplementation("io.micronaut.test:micronaut-test-kotlintest")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testImplementation("io.mockk:mockk:1.10.0")
+    testImplementation("io.mockk:mockk:1.12.7")
 }
 
 tasks {

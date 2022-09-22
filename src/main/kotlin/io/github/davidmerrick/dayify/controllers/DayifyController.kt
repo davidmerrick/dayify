@@ -7,7 +7,6 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.QueryValue
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.asCoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ExecutorService
@@ -19,11 +18,7 @@ class DayifyController(
     private val calendarClient: CalendarClient,
     executors: ExecutorService
 ) {
-    private val coroutineDispatcher: CoroutineDispatcher
-
-    init {
-        coroutineDispatcher = executors.asCoroutineDispatcher()
-    }
+    private val coroutineDispatcher = executors.asCoroutineDispatcher()
 
     @Get("/", produces = [CAL_MEDIA_TYPE])
     suspend fun convertCalendar(@QueryValue url: String): HttpResponse<String> = withContext(coroutineDispatcher) {

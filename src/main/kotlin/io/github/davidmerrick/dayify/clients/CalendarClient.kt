@@ -6,14 +6,9 @@ import io.micronaut.http.HttpHeaders.USER_AGENT
 import io.micronaut.http.HttpRequest
 import io.micronaut.http.client.RxHttpClient
 import io.micronaut.http.client.annotation.Client
-import kotlinx.coroutines.GlobalScope.coroutineContext
-import kotlinx.coroutines.asCoroutineDispatcher
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.rx2.await
 import mu.KotlinLogging
-import java.util.concurrent.ExecutorService
 import javax.inject.Singleton
-import kotlin.coroutines.coroutineContext
 
 private val log = KotlinLogging.logger {}
 
@@ -26,13 +21,15 @@ class CalendarClient(@param:Client private val client: RxHttpClient) {
         log.info("Fetching calendar: $url")
         val request = HttpRequest.GET<String>(url)
             .header(USER_AGENT, USER_AGENT_HEADER)
-        val responseBody = client.retrieve(request)
+        return client.retrieve(request)
             .firstOrError()
-            .toFuture()
-            .get()
+            .await()
+            .let { parseCalendar(it) }
+    }
 
+    private fun parseCalendar(body: String): ICalendar {
         return try {
-            Biweekly.parse(responseBody).first()
+            Biweekly.parse(body).first()
         } catch (e: Exception) {
             log.warn("Failed to parse calendar", e)
             throw e

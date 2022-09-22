@@ -6,11 +6,11 @@ micronaut:
       default:
         num-threads: 3
       httpclient:
-        num-threads: 20
+        num-threads: 10
   http:
     client:
-      read-timeout: 30s
-      read-idle-timeout: 30s
+      read-timeout: 20s
+      read-idle-timeout: 20s
       event-loop-group: httpclient
 
 endpoints:
