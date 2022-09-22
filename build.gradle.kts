@@ -40,7 +40,6 @@ java {
 
 
 val kotlinVersion = project.properties["kotlinVersion"]
-val micronautVersion = project.properties["micronautVersion"]
 
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
