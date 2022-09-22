@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version "1.6.0"
     kotlin("kapt") version "1.6.0"
     id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
-    id("io.micronaut.application") version "1.2.0"
+    id("io.micronaut.application") version "2.0.3"
 }
 
 micronaut {
@@ -43,6 +43,9 @@ val kotlinVersion = project.properties["kotlinVersion"]
 val micronautVersion = project.properties["micronautVersion"]
 
 dependencies {
+    kapt("io.micronaut:micronaut-http-validation")
+    kapt("io.micronaut.jaxrs:micronaut-jaxrs-processor")
+
     implementation("io.micronaut:micronaut-runtime")
     implementation("io.micronaut:micronaut-inject")
     implementation("io.micronaut:micronaut-validation")
@@ -61,6 +64,7 @@ dependencies {
 
     // Test
 
+    kaptTest("io.micronaut:micronaut-inject-java")
     testImplementation("org.spekframework.spek2:spek-runner-junit5:2.0.18")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.9.0")
@@ -69,6 +73,8 @@ dependencies {
     testImplementation("io.micronaut.test:micronaut-test-kotlintest")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
     testImplementation("io.mockk:mockk:1.12.7")
+    testImplementation("com.github.tomakehurst:wiremock:2.27.2")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.4.2")
 }
 
 tasks {
