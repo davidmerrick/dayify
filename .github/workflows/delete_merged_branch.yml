@@ -1,0 +1,14 @@
+name: Delete merged branch
+
+on: 
+  pull_request:
+    types: [closed]
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete merged branch
+        uses: VEVO/branch-cleanup-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
