@@ -11,7 +11,7 @@ import java.time.ZoneId
 import java.time.ZoneOffset
 
 private const val TEST_CALENDAR_FILENAME = "/on_call_schedule.ics"
-private const val NICOLE_CALENDAR_FILENAME = "/nicole.ics"
+private const val SINGLE_DAY_EVENTS_CALENDAR_FILENAME = "/single_day_events.ics"
 
 class CalendarConverterTest {
     @Test
@@ -33,8 +33,10 @@ class CalendarConverterTest {
 
     @Test
     @Disabled
+    // Todo: On my local system, this seems to be converting to PDT. It behaves when run on GCP
+    // We may need to convert everything to UTC
     fun `Parse Nicole's webcal calendar and convert to all-day events`() {
-        val calendarString = this::class.java.getResource(NICOLE_CALENDAR_FILENAME)
+        val calendarString = this::class.java.getResource(SINGLE_DAY_EVENTS_CALENDAR_FILENAME)
             .readText(Charsets.UTF_8)
         val inCalendar = Biweekly.parse(calendarString).first()
         val outCalendar = CalendarConverter.convert(inCalendar)
@@ -44,7 +46,7 @@ class CalendarConverterTest {
         }
 
         outCalendar.events.size shouldBe inCalendar.events.size
-        val firstShift = outCalendar.events.first { it.summary.value == "Nicole's First Shift" }
+        val firstShift = outCalendar.events.first { it.summary.value == "First Shift" }
         toLocalDate(firstShift.dateStart.value) shouldBe LocalDate.of(2022, 6, 19)
         toLocalDate(firstShift.dateEnd.value) shouldBe LocalDate.of(2022, 6, 20)
     }

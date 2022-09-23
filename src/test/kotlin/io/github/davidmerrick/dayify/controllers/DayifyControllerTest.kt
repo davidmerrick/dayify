@@ -10,12 +10,14 @@ import io.micronaut.http.HttpStatus
 import io.micronaut.http.client.HttpClient
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Inject
 import org.apache.commons.lang3.RandomStringUtils
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
-import javax.inject.Inject
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 private const val DAYIFY_PATH = "/dayify"
 
@@ -43,10 +45,14 @@ class DayifyControllerTest {
     fun `Critical path test`() = runBlocking {
         // Set up the mocks
         val calendarPath = "/external-calendars/" + RandomStringUtils.randomAlphanumeric(10)
-        mockCalendarResponse(calendarPath, "/holidays.ics")
+        mockCalendarResponse(calendarPath, "/on_call_schedule.ics")
 
-        // Todo: How to do query params?
-        val request = HttpRequest.GET<String>("$DAYIFY_PATH?url=" + wireMockServer.baseUrl() + calendarPath)
+        val request = HttpRequest.GET<String>(DAYIFY_PATH)
+            .accept("text/calendar")
+            .apply {
+                parameters.add("url", wireMockServer.baseUrl() + calendarPath)
+            }
+
         client.toBlocking().retrieve(request)
 
         wireMockServer.verify(
