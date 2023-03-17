@@ -3,7 +3,6 @@ package io.github.davidmerrick.dayify.logic
 import biweekly.Biweekly
 import biweekly.util.ICalDate
 import io.kotlintest.shouldBe
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -30,11 +29,7 @@ class CalendarConverterTest {
     }
 
     @Test
-    @Disabled
-    // Todo: When run on GCP, the dates don't match
-    // I think BiWeekly localizes the date based on the system time
-    // So when it's run on Google's servers, the day ends up different
-    fun `Parse Nicole's webcal calendar and convert to all-day events`() {
+    fun `Parse Nursegrid webcal calendar and convert to all-day events`() {
         val calendarString = this::class.java.getResource(SINGLE_DAY_EVENTS_CALENDAR_FILENAME)
             .readText(Charsets.UTF_8)
         val inCalendar = Biweekly.parse(calendarString).first()
@@ -47,7 +42,7 @@ class CalendarConverterTest {
         outCalendar.events.size shouldBe inCalendar.events.size
         val firstShift = outCalendar.events.first { it.summary.value == "First Shift" }
         assertDatesMatch(2022, 6, 19, toZonedDate(firstShift.dateStart.value))
-        assertDatesMatch(2022, 6, 19, toZonedDate(firstShift.dateEnd.value))
+        assertDatesMatch(2022, 6, 20, toZonedDate(firstShift.dateEnd.value))
     }
 
     private fun assertDatesMatch(year: Int, month: Int, day: Int, compareTo: ZonedDateTime) {

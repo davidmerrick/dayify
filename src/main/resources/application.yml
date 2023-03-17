@@ -12,6 +12,8 @@ micronaut:
       read-timeout: 20s
       read-idle-timeout: 20s
       event-loop-group: httpclient
+  security:
+    enabled: false
 
 endpoints:
   all:

@@ -1,16 +1,16 @@
 group = "io.github.davidmerrick.dayify"
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    jcenter()
 }
 
 plugins {
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    kotlin("jvm") version "1.6.0"
-    kotlin("kapt") version "1.6.0"
-    id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
-    id("io.micronaut.application") version "2.0.3"
+    kotlin("jvm") version "1.8.0"
+    kotlin("kapt") version "1.8.0"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.8.0"
+    id("io.micronaut.application") version "3.6.2"
 }
 
 micronaut {
@@ -38,27 +38,28 @@ java {
     sourceCompatibility = JavaVersion.toVersion("11")
 }
 
-
-val kotlinVersion = project.properties["kotlinVersion"]
-
 dependencies {
     kapt("io.micronaut:micronaut-http-validation")
     kapt("io.micronaut.jaxrs:micronaut-jaxrs-processor")
 
     implementation("io.micronaut:micronaut-runtime")
-    implementation("io.micronaut:micronaut-inject")
-    implementation("io.micronaut:micronaut-validation")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("io.github.microutils:kotlin-logging:3.0.0")
-    implementation("io.micronaut:micronaut-management")
+    implementation("io.micronaut.security:micronaut-security")
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
     implementation("io.micronaut:micronaut-http-client")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
-    implementation("net.sf.biweekly:biweekly:0.6.6")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.6.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
+    implementation("javax.annotation:javax.annotation-api")
+    implementation("io.micronaut:micronaut-validation")
 
+    implementation("net.sf.biweekly:biweekly:0.6.7")
+
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.20")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.7.20")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.6.4")
+
+    // Logging
+
+    implementation("io.github.microutils:kotlin-logging:3.0.0")
     runtimeOnly("ch.qos.logback:logback-classic")
 
     // Test
@@ -76,17 +77,7 @@ dependencies {
 }
 
 tasks {
-    compileKotlin {
-        kotlinOptions {
-            jvmTarget = "11"
-        }
-    }
-
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = "11"
-        }
-    }
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> { kotlinOptions.jvmTarget = "17" }
 
     test {
         useJUnitPlatform()

@@ -15,8 +15,9 @@ private val log = KotlinLogging.logger {}
 private const val USER_AGENT_HEADER = "Dayify/1.0"
 
 @Singleton
-class CalendarClient(@param:Client private val client: HttpClient) {
-
+class CalendarClient(
+    @param:Client private val client: HttpClient
+) {
     suspend fun fetchCalendar(url: String): ICalendar {
         log.info("Fetching calendar: $url")
         val request = HttpRequest.GET<String>(url)
