@@ -16,7 +16,7 @@ class CalendarConverterTest {
         val calendarString = this::class.java.getResource(ON_CALL_CALENDAR_FILENAME)
             .readText(Charsets.UTF_8)
         val inCalendar = Biweekly.parse(calendarString).first()
-        val outCalendar = CalendarConverter.convert(inCalendar)
+        val outCalendar = CalendarConverter.convert(inCalendar, 1)
         outCalendar.events.forEach {
             it.dateStart.value.hasTime() shouldBe false
             it.dateEnd.value.hasTime() shouldBe false
@@ -33,7 +33,7 @@ class CalendarConverterTest {
         val calendarString = this::class.java.getResource(SINGLE_DAY_EVENTS_CALENDAR_FILENAME)
             .readText(Charsets.UTF_8)
         val inCalendar = Biweekly.parse(calendarString).first()
-        val outCalendar = CalendarConverter.convert(inCalendar)
+        val outCalendar = CalendarConverter.convert(inCalendar, 1)
         outCalendar.events.forEach {
             it.dateStart.value.hasTime() shouldBe false
             it.dateEnd.value.hasTime() shouldBe false

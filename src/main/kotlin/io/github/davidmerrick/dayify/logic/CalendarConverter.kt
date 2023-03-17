@@ -18,9 +18,9 @@ object CalendarConverter {
      * Returns a copy of the input calendar
      * containing the converted events.
      */
-    fun convert(inCalendar: ICalendar): ICalendar {
+    fun convert(inCalendar: ICalendar, addEndDays: Int = 0): ICalendar {
         val convertedEvents = inCalendar.events
-            .map { it.stripTime() }
+            .map { it.stripTime(addEndDays) }
             .toList()
 
         return inCalendar.copyWithEvents(convertedEvents)
@@ -45,23 +45,25 @@ fun convertStartDate(date: DateStart): DateStart {
  * Returns a Date that's 1 day after DateEnd.
  * This is a workaround for end dates being exclusive as per RFC 2445
  */
-fun convertEndDate(dateEnd: DateEnd): DateEnd {
-    val dateInstant = dateEnd.value.rawComponents
+fun convertEndDate(dateEnd: DateEnd, addEndDays: Int): DateEnd {
+    return dateEnd.value.rawComponents
         .toDate()
         .toInstant()
-        .plus(1L, ChronoUnit.DAYS)
-    return DateEnd(
-        ICalDate.from(dateInstant),
-        false
-    )
+        .plus(addEndDays.toLong(), ChronoUnit.DAYS)
+        .let {
+            DateEnd(
+                ICalDate.from(it),
+                false
+            )
+        }
 }
 
-fun VEvent.stripTime(): VEvent {
+fun VEvent.stripTime(addEndDays: Int): VEvent {
     val newEvent = VEvent(this)
 
     // Strip out time components
     newEvent.dateStart = convertStartDate(this.dateStart)
-    newEvent.dateEnd = convertEndDate(this.dateEnd)
+    newEvent.dateEnd = convertEndDate(this.dateEnd, addEndDays)
 
     return newEvent
 }

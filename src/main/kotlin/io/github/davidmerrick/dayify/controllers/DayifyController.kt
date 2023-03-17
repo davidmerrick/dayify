@@ -21,14 +21,17 @@ class DayifyController(
     private val coroutineDispatcher = executors.asCoroutineDispatcher()
 
     @Get("/", produces = [CAL_MEDIA_TYPE])
-    suspend fun convertCalendar(@QueryValue url: String): HttpResponse<String> = withContext(coroutineDispatcher) {
+    suspend fun convertCalendar(
+        @QueryValue url: String,
+        @QueryValue addEndDays: Int? = null
+    ): HttpResponse<String> = withContext(coroutineDispatcher) {
         val inCalendar = try {
             calendarClient.fetchCalendar(url)
         } catch (e: Exception) {
             return@withContext HttpResponse.badRequest()
         }
 
-        val outCalendar = CalendarConverter.convert(inCalendar)
+        val outCalendar = CalendarConverter.convert(inCalendar, addEndDays ?: 0)
         HttpResponse.ok(Biweekly.write(outCalendar).go())
     }
 }
