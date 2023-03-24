@@ -5,25 +5,62 @@ import biweekly.component.VEvent
 import biweekly.property.DateEnd
 import biweekly.property.DateStart
 import biweekly.util.ICalDate
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
 /**
- * Note: By default, biweekly writes all date/time values in UTC time,
- * so no need to worry about conversions.
+ * Note: By default, biweekly writes all date/time values in UTC time
  */
 object CalendarConverter {
+
+    private val defaultZone = ZoneId.of("UTC")
 
     /**
      * Converts events to all-day events.
      * Returns a copy of the input calendar
      * containing the converted events.
      */
-    fun convert(inCalendar: ICalendar, addEndDays: Int = 0): ICalendar {
+    fun convert(inCalendar: ICalendar, zoneId: ZoneId? = null): ICalendar {
         val convertedEvents = inCalendar.events
-            .map { it.stripTime(addEndDays) }
+            .map { stripTime(it, zoneId ?: defaultZone) }
             .toList()
 
         return inCalendar.copyWithEvents(convertedEvents)
+    }
+
+    private fun convertStartDate(date: DateStart): DateStart {
+        return DateStart(
+            date.value.rawComponents.toDate(),
+            false
+        )
+    }
+
+    /**
+     * Returns a Date that's 1 day after DateEnd.
+     * Note that end dates are exclusive as per RFC 2445
+     */
+    private fun convertEndDate(dateEnd: DateEnd, zoneId: ZoneId): DateEnd {
+        return dateEnd.value
+            .toInstant()
+            .atZone(zoneId)
+            .plus(1, ChronoUnit.DAYS)
+            .toInstant()
+            .let {
+                DateEnd(
+                    ICalDate.from(it),
+                    false
+                )
+            }
+    }
+
+    private fun stripTime(event: VEvent, zoneId: ZoneId): VEvent {
+        val newEvent = VEvent(event)
+
+        // Strip out time components
+        newEvent.dateStart = convertStartDate(event.dateStart)
+        newEvent.dateEnd = convertEndDate(event.dateEnd, zoneId)
+
+        return newEvent
     }
 }
 
@@ -32,38 +69,4 @@ fun ICalendar.copyWithEvents(events: List<VEvent>): ICalendar {
     newCalendar.setComponent(VEvent::class.java, null)
     events.forEach { newCalendar.addEvent(it) }
     return newCalendar
-}
-
-fun convertStartDate(date: DateStart): DateStart {
-    return DateStart(
-        date.value.rawComponents.toDate(),
-        false
-    )
-}
-
-/**
- * Returns a Date that's 1 day after DateEnd.
- * This is a workaround for end dates being exclusive as per RFC 2445
- */
-fun convertEndDate(dateEnd: DateEnd, addEndDays: Int): DateEnd {
-    return dateEnd.value.rawComponents
-        .toDate()
-        .toInstant()
-        .plus(addEndDays.toLong(), ChronoUnit.DAYS)
-        .let {
-            DateEnd(
-                ICalDate.from(it),
-                false
-            )
-        }
-}
-
-fun VEvent.stripTime(addEndDays: Int): VEvent {
-    val newEvent = VEvent(this)
-
-    // Strip out time components
-    newEvent.dateStart = convertStartDate(this.dateStart)
-    newEvent.dateEnd = convertEndDate(this.dateEnd, addEndDays)
-
-    return newEvent
 }

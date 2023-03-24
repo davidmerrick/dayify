@@ -10,13 +10,15 @@ import java.time.ZonedDateTime
 private const val ON_CALL_CALENDAR_FILENAME = "/on_call_schedule.ics"
 private const val SINGLE_DAY_EVENTS_CALENDAR_FILENAME = "/single_day_events.ics"
 
+private const val PDT_ZONE = "America/Los_Angeles"
+
 class CalendarConverterTest {
     @Test
     fun `Parse calendar and convert to all-day events`() {
         val calendarString = this::class.java.getResource(ON_CALL_CALENDAR_FILENAME)
             .readText(Charsets.UTF_8)
         val inCalendar = Biweekly.parse(calendarString).first()
-        val outCalendar = CalendarConverter.convert(inCalendar, 1)
+        val outCalendar = CalendarConverter.convert(inCalendar, ZoneId.of(PDT_ZONE))
         outCalendar.events.forEach {
             it.dateStart.value.hasTime() shouldBe false
             it.dateEnd.value.hasTime() shouldBe false
@@ -29,11 +31,28 @@ class CalendarConverterTest {
     }
 
     @Test
-    fun `Parse Nursegrid webcal calendar and convert to all-day events`() {
+    fun `Parse webcal calendar with single-day events and convert to all-day events`() {
         val calendarString = this::class.java.getResource(SINGLE_DAY_EVENTS_CALENDAR_FILENAME)
             .readText(Charsets.UTF_8)
         val inCalendar = Biweekly.parse(calendarString).first()
-        val outCalendar = CalendarConverter.convert(inCalendar, 1)
+        val outCalendar = CalendarConverter.convert(inCalendar, ZoneId.of(PDT_ZONE))
+        outCalendar.events.forEach {
+            it.dateStart.value.hasTime() shouldBe false
+            it.dateEnd.value.hasTime() shouldBe false
+        }
+
+        outCalendar.events.size shouldBe inCalendar.events.size
+        val firstShift = outCalendar.events.first { it.summary.value == "First Shift" }
+        assertDatesMatch(2022, 6, 19, toZonedDate(firstShift.dateStart.value))
+        assertDatesMatch(2022, 6, 20, toZonedDate(firstShift.dateEnd.value))
+    }
+
+    @Test
+    fun `Parse webcal calendar with single-day events and convert to all-day events, without timezone`() {
+        val calendarString = this::class.java.getResource(SINGLE_DAY_EVENTS_CALENDAR_FILENAME)
+            .readText(Charsets.UTF_8)
+        val inCalendar = Biweekly.parse(calendarString).first()
+        val outCalendar = CalendarConverter.convert(inCalendar)
         outCalendar.events.forEach {
             it.dateStart.value.hasTime() shouldBe false
             it.dateEnd.value.hasTime() shouldBe false
@@ -59,7 +78,9 @@ class CalendarConverterTest {
     }
 
     private fun toZonedDate(calDate: ICalDate): ZonedDateTime {
-        return ZonedDateTime
-            .ofInstant(calDate.toInstant(), ZoneId.systemDefault())
+        return ZonedDateTime.ofInstant(
+            calDate.toInstant(),
+            ZoneId.of(PDT_ZONE)
+        )
     }
 }
