@@ -21,36 +21,31 @@ object CalendarConverter {
      * containing the converted events.
      */
     fun convert(inCalendar: ICalendar, zoneId: ZoneId? = null): ICalendar {
-        val convertedEvents = inCalendar.events
+        return inCalendar.events
             .map { stripTime(it, zoneId ?: defaultZone) }
             .toList()
+            .let {
+                inCalendar.copyWithEvents(it)
+            }
 
-        return inCalendar.copyWithEvents(convertedEvents)
     }
 
-    private fun convertStartDate(date: DateStart): DateStart {
-        return DateStart(
-            date.value.rawComponents.toDate(),
-            false
-        )
-    }
+    private fun convertStartDate(date: DateStart) = DateStart(date.value, false)
 
     /**
      * Returns a Date that's 1 day after DateEnd.
      * Note that end dates are exclusive as per RFC 2445
      */
     private fun convertEndDate(dateEnd: DateEnd, zoneId: ZoneId): DateEnd {
-        return dateEnd.value
+        // Create a UTC date at the given zone before adding a day to it
+        val normalized = dateEnd.value
             .toInstant()
             .atZone(zoneId)
-            .plus(1, ChronoUnit.DAYS)
+            .truncatedTo(ChronoUnit.DAYS)
+
+        return normalized.plus(1, ChronoUnit.DAYS)
             .toInstant()
-            .let {
-                DateEnd(
-                    ICalDate.from(it),
-                    false
-                )
-            }
+            .let { DateEnd(ICalDate.from(it), false) }
     }
 
     private fun stripTime(event: VEvent, zoneId: ZoneId): VEvent {
@@ -66,6 +61,7 @@ object CalendarConverter {
 
 fun ICalendar.copyWithEvents(events: List<VEvent>): ICalendar {
     val newCalendar = ICalendar(this)
+    newCalendar.timezoneInfo.defaultTimezone = null
     newCalendar.setComponent(VEvent::class.java, null)
     events.forEach { newCalendar.addEvent(it) }
     return newCalendar
