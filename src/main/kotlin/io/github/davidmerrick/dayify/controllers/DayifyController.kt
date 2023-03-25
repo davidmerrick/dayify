@@ -23,14 +23,10 @@ class DayifyController(
 
     /**
      * Converts a calendar to all-day events.
-     * @param atZone: Specifies the timezone to use for the calendar. i.e. "America/Los_Angeles".
-     * This is important to get the end date correct, as this service strips out the time, which can result
-     * in events ending a day later or earlier than expected on the client side.
      */
     @Get("/", produces = [CAL_MEDIA_TYPE])
     suspend fun convertCalendar(
-        @QueryValue url: String,
-        @QueryValue atZone: ZoneId? = null
+        @QueryValue url: String
     ): HttpResponse<String> = withContext(coroutineDispatcher) {
         val inCalendar = try {
             calendarClient.fetchCalendar(url)
@@ -38,7 +34,7 @@ class DayifyController(
             return@withContext HttpResponse.badRequest()
         }
 
-        val outCalendar = CalendarConverter.convert(inCalendar, atZone)
+        val outCalendar = CalendarConverter.convert(inCalendar)
         HttpResponse.ok(Biweekly.write(outCalendar).go())
     }
 }

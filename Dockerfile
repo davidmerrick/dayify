@@ -19,4 +19,4 @@ FROM frolvlad/alpine-glibc:alpine-3.12
 RUN apk --no-cache update && apk add libstdc++
 EXPOSE 8080
 COPY --from=graalvm /home/app/application /app/application
-ENTRYPOINT ["/app/application"]
+ENTRYPOINT ["/app/application", "-Duser.timezone=America/Los_Angeles"]

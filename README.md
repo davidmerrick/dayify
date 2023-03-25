@@ -30,6 +30,14 @@ Meaning if you had an event that ended on Monday the 21st at noon, but converted
 the behavior would be to show the event as going through Sunday. This is clearly undesired behavior,
 so Dayify rounds end dates to the next day.
 
-# Todo: 
-* Have the client send a user agent
+## JVM timezone
+
+It was a headache testing this, because the timezone of the prd instance
+differed from my local machine.
+
+To set the JVM timezone, run it with:
+
+`-Duser.timezone=America/Los_Angeles`
+
+# Todo:
 * Have the client follow 302 redirects
