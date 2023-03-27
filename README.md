@@ -40,4 +40,5 @@ To set the JVM timezone, run it with:
 `-Duser.timezone=America/Los_Angeles`
 
 # Todo:
+* If the event ends on the same day, drop the end date
 * Have the client follow 302 redirects
